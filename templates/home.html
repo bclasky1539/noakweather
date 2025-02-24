@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% block content %}
+    <section class="bg-primary hero is-primary">
+        <div class="hero-body">
+            <div class="container text-center">
+                <h1 class="title mt-5">
+                    NOAK Weather Dashboard
+                </h1>
+            </div>
+        </div>
+    </section>
+    <section class="header">
+        <div class="container is-fluid text-center">
+            <form action="/" method="POST">
+                <div class="field has-addons">
+                    <div class="row">
+                        <div class="col mt-4">
+                            <label for="city " class="fs-4 is-size-5
+                                col-form-label col-form-label-lg">
+                                City
+                            </label>
+                        </div>
+                        <div class="col mt-4">
+                            <label for="state" class="fs-4 is-size-5
+                                col-form-label col-form-label-lg">
+                                State
+                            </label>
+                        </div>
+                        <div class="col mt-4">
+                            <label for="country" class="fs-4 is-size-5
+                                col-form-label col-form-label-lg">
+                                Country
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <label for="cityName"></label><input type="text" id="cityName" name="cityName" value=""
+                                                                 required
+                                                                 placeholder="Enter City Name" class="form-control">
+                        </div>
+                        <div class="col-sm">
+                            <label for="stateName"></label><input type="text" id="stateName" name="stateName" value=""
+                                                                  placeholder="Enter State Name (Only for US/Canada)"
+                                                                  class="form-control">
+                        </div>
+                        <div class="col-sm">
+                            <label for="countryName"></label><input type="text" id="countryName" name="countryName"
+                                                                    value=""
+                                                                    required placeholder="Enter Country Name"
+                                                                    class="form-control">
+                        </div>
+                    </div>
+                    <br>
+                    <button class="submit btn btn-light">
+                        Get Weather
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section class="section">
+        {% if current_weather_data.cod == 200 or forecast_data.cod == 200 %}
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-secondary-subtle" style="max-width: 20rem;">
+                            <div class="card-body">
+                                <h5 class="card-title font-weight-bold text-center">Current Weather</h5>
+                                {% if current_weather_data.cod == 200 %}
+                                    <br> City, Country Code: {{ location_data.name }}, {{ location_data.country }} <br>
+                                    Latitude: {{ location_data.lat }} <br>
+                                    Longitude: {{ location_data.lon }} <br>
+                                    <br>
+                                    Temperature: {{ current_weather_data.main.temp }}
+                                    {{ formats_data.temperature_format }}
+                                    <br>
+                                    Feels
+                                    Like: {{ current_weather_data.main.feels_like }}
+                                    {{ formats_data.temperature_format }}
+                                    <br>
+                                    Minimum
+                                    Temperature: {{ current_weather_data.main.temp_min }}
+                                    {{ formats_data.temperature_format }}
+                                    <br>
+                                    Maximum
+                                    Temperature: {{ current_weather_data.main.temp_max }}
+                                    {{ formats_data.temperature_format }}
+                                    <br>
+                                    Pressure: {{ current_weather_data.main.pressure }}
+                                    {{ formats_data.pressure_format }}
+                                    <br>
+                                    Ground Pressure
+                                    : {{ current_weather_data.main.grnd_level }} {{ formats_data.pressure_format }}
+                                    <br>
+                                    Humidity: {{ current_weather_data.main.humidity }}{{ formats_data.humidity_format }}
+                                    <br>
+                                    Visibility: {{ current_weather_data.visibility }}
+                                    {{ formats_data.visibility_format }}
+                                    <br>
+                                    Wind
+                                    Speed: {{ current_weather_data.wind.speed }} {{ formats_data.wind_speed_format }}
+                                    <br>
+                                    Wind
+                                    Direction: {{ current_weather_data.wind.deg }}
+                                    {{ formats_data.wind_direction_format }}
+                                    <br>
+                                    {% if current_weather_data.wind.gust != -999999.0 %}
+                                        Wind Gust: {{ current_weather_data.wind.gust }}
+                                        {{ formats_data.wind_speed_format }}
+                                        <br>
+                                    {% endif %}
+                                    Sunrise: {{ current_weather_data.sys.sunrise }} <br>
+                                    Sunset: {{ current_weather_data.sys.sunset }} <br>
+                                    <br>
+                                    {{ current_weather_data.weather[0].main }}:
+                                    {{ current_weather_data.weather[0].description }}
+                                    <br>
+                                    <img src="https://openweathermap.org/img/wn/{{ current_weather_data.weather[0].icon }}@2x.png"
+                                         alt="Icon">
+                                    <br>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 mb-4">
+                        <div class="card bg-secondary-subtle">
+                            <div class="card-body">
+                                <h5 class="card-title font-weight-bold text-center">Forecast</h5>
+                                {% if forecast_data.cod == 200 %}
+                                    <br> City, Country Code: {{ location_data.name }}, {{ location_data.country }}
+                                    <br>
+                                    Latitude: {{ location_data.lat }} <br>
+                                    Longitude: {{ location_data.lon }} <br> <br>
+                                    <div class="container-fluid py-4">
+                                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-4 g-4">
+                                            {% for forecast_item in forecast_data.list_obj %}
+                                                <li class="card h-100 bg-secondary-subtle">
+                                                    <div class="col">
+                                                        <h6 class="card-title font-weight-bold text-center">
+                                                            Date/Time: {{ forecast_item.dt_txt }}</h6>
+                                                        <br> Temperature: {{ forecast_item.main.temp }}
+                                                        {{ formats_data.temperature_format }}
+                                                        <br>
+                                                        Feels
+                                                        Like: {{ forecast_item.main.feels_like }} {{ formats_data.temperature_format }}
+                                                        <br>
+                                                        Minimum
+                                                        Temperature: {{ forecast_item.main.temp_min }}
+                                                        {{ formats_data.temperature_format }}
+                                                        <br>
+                                                        Maximum
+                                                        Temperature: {{ forecast_item.main.temp_max }}
+                                                        {{ formats_data.temperature_format }}
+                                                        <br>
+                                                        Pressure: {{ forecast_item.main.pressure }} {{ formats_data.pressure_format }}
+                                                        <br>
+                                                        Ground Pressure
+                                                        : {{ forecast_item.main.grnd_level }} {{ formats_data.pressure_format }}
+                                                        <br>
+                                                        Humidity:
+                                                        {{ forecast_item.main.humidity }}{{ formats_data.humidity_format }}
+                                                        <br>
+                                                        Visibility: {{ forecast_item.visibility }} {{ formats_data.visibility_format }}
+                                                        <br>
+                                                        Wind
+                                                        Speed: {{ forecast_item.wind.speed }} {{ formats_data.wind_speed_format }}
+                                                        <br>
+                                                        Wind
+                                                        Direction: {{ forecast_item.wind.deg }} {{ formats_data.wind_direction_format }}
+                                                        <br>
+                                                        {% if forecast_item.wind.gust != -999999.0 %}
+                                                            Wind Gust: {{ forecast_item.wind.gust }}
+                                                            {{ formats_data.wind_speed_format }}
+                                                        {% endif %}
+                                                        <br>
+                                                        {% for weather in forecast_item.weather %}
+                                                            <br> {{ weather.main }}: {{ weather.description }}
+                                                            <img src="https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png"
+                                                                 width="50" height="50" alt="Icon">
+                                                            <br>
+                                                        {% endfor %}
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

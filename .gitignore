@@ -1,0 +1,9 @@
+# ignoring specific files
+.DS_Store
+.env
+# ignoring specific directories
+__pycache__/
+documentation/
+# ignorning specific environments
+.idea/
+# exceptions
